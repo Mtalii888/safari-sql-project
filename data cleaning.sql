@@ -97,7 +97,7 @@ set seat_class = case
 	when trim(lower(seat_class)) in ('bus', 'business', 'business class') then 'Business'
 	else null
 end;
---Standardizingh payment method values.
+--Standardizing payment method values.
 update safari_connect_dirty 
 set payment_method = case 
 	when trim(lower(payment_method)) = 'card' then 'Card'
@@ -124,6 +124,17 @@ end;
 --strip off 'KES' by removing non digit values.
 update safari_connect_dirty
 set fare_per_seat = regexp_replace(fare_per_seat, '[^0-9]','','g');
+
+--Convert to integer
+alter table safari_connect_dirty
+alter column total_fare type int
+using total_fare::int;
+
+alter table safari_connect_dirty
+alter column fare_per_seat type int 
+using fare_per_seat::int;
+
+
 
 --strip off 'KES' by removing non digit values.
 update safari_connect_dirty 
@@ -170,20 +181,22 @@ select ctid, * from safari_connect_dirty;
 --Deleting using ctid
 delete from safari_connect_dirty 
 where ctid = '(13,42)';
+ 
 
 --Creating production table
-create table booking_staging as
+create table if not exists bookings_staging as
 select * from safari_connect_dirty;
 
 set search_path to safaari_connect;
-select * from booking_staging;
+select * from bookings_staging;
 
-create view v_clean_trips as
-select * from booking_staging
+--Create view
+create  view vw_clean_trips as
+select * from bookings_staging
 where booking_status = 'Completed'
-order by booking_staging.booking_id;
+order by bookings_staging.booking_id;
 
-select * from v_clean_trips;
+select * from vw_clean_trips;
 
 
 
