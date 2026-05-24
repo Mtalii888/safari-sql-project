@@ -9,8 +9,8 @@ with v_route_perfomance as (
                                    count(booking_id)  as total_bookings,
                                    sum(seats_booked) as total_seats,
                                    sum(total_fare) as total_revenue,
-                                   avg(total_fare) as avg_fare,
-                                   avg(trip_rating) as avg_trip_rating
+                                   round(avg(total_fare),2) as avg_fare,
+                                   round(avg(trip_rating),2) as avg_trip_rating
                             from vw_clean_trips group by route_code,
                                                          route_from,
                                                          route_to 
@@ -32,8 +32,8 @@ with v_route_perfomance as (
                                    count(booking_id)  as total_bookings,
                                    sum(seats_booked) as total_seats,
                                    sum(total_fare) as total_revenue,
-                                   avg(total_fare) as avg_fare,
-                                   avg(trip_rating) as avg_trip_rating
+                                   round(avg(total_fare),2) as avg_fare,
+                                   round(avg(trip_rating),2) as avg_trip_rating
                             from vw_clean_trips group by route_code,
                                                          route_from,
                                                          route_to 
